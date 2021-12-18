@@ -2,7 +2,6 @@ import React from "react";
 import dynamic from "next/dynamic";
 import { Button, Input } from "@material-ui/core";
 import styles from "./WriteForm.module.scss";
-import { TextsmsOutlined as MessageIcon } from "@material-ui/icons";
 
 const Editor = dynamic(() => import("../Editor").then((m) => m.Editor), {
   ssr: false,
