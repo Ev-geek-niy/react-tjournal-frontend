@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { Paper, Button, IconButton, Avatar } from "@material-ui/core";
+import { AuthDialog } from "../AuthDialog";
 import {
   SearchOutlined as SearchIcon,
   CreateOutlined as PenIcon,
@@ -8,11 +9,22 @@ import {
   Menu as MenuIcon,
   ExpandMoreOutlined as ArrowBottom,
   NotificationsNoneOutlined as NotificationIcon,
+  AccountCircleOutlined as UserIcon,
 } from "@material-ui/icons";
 
 import styles from "./Header.module.scss";
 
 export const Header: React.FC = () => {
+  const [authVisible, setAuthVisible] = React.useState(false);
+
+  const openAuthDialog = () => {
+    setAuthVisible(true);
+  };
+
+  const closeAuthDialog = () => {
+    setAuthVisible(false);
+  };
+
   return (
     <Paper classes={{ root: styles.root }} elevation={0}>
       <div className="d-flex align-center">
@@ -50,17 +62,22 @@ export const Header: React.FC = () => {
         <IconButton>
           <NotificationIcon />
         </IconButton>
-        <Link href="/profile/1">
-          <a className="d-flex align-center">
-            <Avatar
-              className={styles.avatar}
-              alt="Remy Sharp"
-              src="https://leonardo.osnova.io/5ffeac9a-a0e5-5be6-98af-659bfaabd2a6/-/scale_crop/108x108/-/format/webp/"
-            />
-            <ArrowBottom />
-          </a>
-        </Link>
+        {/*<Link href="/profile/1">*/}
+        {/*  <a className="d-flex align-center">*/}
+        {/*    <Avatar*/}
+        {/*      className={styles.avatar}*/}
+        {/*      alt="Remy Sharp"*/}
+        {/*      src="https://leonardo.osnova.io/5ffeac9a-a0e5-5be6-98af-659bfaabd2a6/-/scale_crop/108x108/-/format/webp/"*/}
+        {/*    />*/}
+        {/*    <ArrowBottom />*/}
+        {/*  </a>*/}
+        {/*</Link>*/}
+        <div className={styles.loginButton} onClick={openAuthDialog}>
+          <UserIcon />
+          Войти
+        </div>
       </div>
+      <AuthDialog onClose={closeAuthDialog} visible={authVisible} />
     </Paper>
   );
 };
