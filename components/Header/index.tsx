@@ -4,10 +4,8 @@ import { Paper, Button, IconButton, Avatar } from "@material-ui/core";
 import { AuthDialog } from "../AuthDialog";
 import {
   SearchOutlined as SearchIcon,
-  CreateOutlined as PenIcon,
   SmsOutlined as MessageIcon,
   Menu as MenuIcon,
-  ExpandMoreOutlined as ArrowBottom,
   NotificationsNoneOutlined as NotificationIcon,
   AccountCircleOutlined as UserIcon,
 } from "@material-ui/icons";
