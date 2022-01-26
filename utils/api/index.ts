@@ -21,4 +21,13 @@ export const UserApi = {
     );
     return data;
   },
+
+  async getMe(token: string) {
+    const { data } = await instance.get<ResponseUser>("/users/me", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return data;
+  },
 };
