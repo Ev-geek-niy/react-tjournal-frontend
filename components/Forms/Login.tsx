@@ -5,18 +5,36 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { LoginFormSchema } from "../../utils/schemas/validations";
 import { FormField } from "../FormField";
 import { FormProvider } from "react-hook-form";
+import { LoginDto } from "../../utils/api/types";
+import { UserApi } from "../../utils/api";
+import { setCookie } from "nookies";
+import Alert from "@material-ui/lab/Alert";
 
 interface LoginFormProps {
   onOpenRegister: () => void;
 }
 
 export const LoginForm: React.FC<LoginFormProps> = ({ onOpenRegister }) => {
+  const [errorMessage, setErrorMessage] = React.useState("");
   const form = useForm({
     mode: "onChange",
     resolver: yupResolver(LoginFormSchema),
   });
 
-  const onSubmit = (data) => console.log(data);
+  const onSubmit = async (dto: LoginDto) => {
+    try {
+      const data = await UserApi.login(dto);
+      console.log(data);
+      setCookie(null, "authToken", data.token, {
+        maxAge: 30 * 24 * 60 * 60,
+        path: "/",
+      });
+      setErrorMessage("");
+    } catch (err) {
+      console.warn("Ошибка при регистрации", err);
+      setErrorMessage(err.response.data.message);
+    }
+  };
 
   return (
     <div>
@@ -24,9 +42,14 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onOpenRegister }) => {
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <FormField name="email" label="Почта" />
           <FormField name="password" label="Пароль" />
+          {errorMessage && (
+            <Alert severity="error" className="mb-20">
+              {errorMessage}
+            </Alert>
+          )}
           <div className="d-flex align-center justify-between">
             <Button
-              disabled={!form.formState.isValid}
+              disabled={!form.formState.isValid || form.formState.isSubmitting}
               type="submit"
               color="primary"
               variant="contained"
