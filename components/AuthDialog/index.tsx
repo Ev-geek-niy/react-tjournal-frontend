@@ -11,9 +11,9 @@ import {
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
 import styles from "./AuthDialog.module.scss";
-import { MainForm } from "../Forms/Main";
-import { LoginForm } from "../Forms/Login";
-import { RegisterForm } from "../Forms/Register";
+import { MainForm } from "./forms/Main";
+import { LoginForm } from "./forms/Login";
+import { RegisterForm } from "./forms/Register";
 
 interface AuthDialogProps {
   onClose: () => void;
