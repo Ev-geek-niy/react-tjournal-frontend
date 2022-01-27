@@ -6,11 +6,12 @@ import { LoginFormSchema } from "../../../utils/schemas/validations";
 import { FormField } from "../../FormField";
 import { FormProvider } from "react-hook-form";
 import { LoginDto } from "../../../utils/api/types";
-import { UserApi } from "../../../utils/api";
+import { UserApi } from "../../../utils/api/user";
 import { setCookie } from "nookies";
 import Alert from "@material-ui/lab/Alert";
 import { useAppDispatch } from "../../../redux/hooks";
 import { setUserData } from "../../../redux/slices/user";
+import { Api } from "../../../utils/api";
 
 interface LoginFormProps {
   onOpenRegister: () => void;
@@ -26,8 +27,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onOpenRegister }) => {
 
   const onSubmit = async (dto: LoginDto) => {
     try {
-      const data = await UserApi.login(dto);
-      console.log(data);
+      const data = await Api().user.login(dto);
       setCookie(null, "authToken", data.token, {
         maxAge: 30 * 24 * 60 * 60,
         path: "/",
@@ -35,8 +35,10 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onOpenRegister }) => {
       setErrorMessage("");
       dispatch(setUserData(data));
     } catch (err) {
-      console.warn("Ошибка при регистрации", err);
-      setErrorMessage(err.response.data.message);
+      console.warn("Register error", err);
+      if (err.response) {
+        setErrorMessage(err.response.data.message);
+      }
     }
   };
 

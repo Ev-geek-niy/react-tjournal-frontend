@@ -9,6 +9,10 @@ import { Provider } from "react-redux";
 import { Header } from "../components/Header";
 import { theme } from "../theme";
 import { store, wrapper } from "../redux/store";
+import { parseCookies } from "nookies";
+import { UserApi } from "../utils/api/user";
+import { setUserData } from "../redux/slices/user";
+import { Api } from "../utils/api";
 
 function MyApp({ Component, pageProps }) {
   return (
@@ -35,5 +39,32 @@ function MyApp({ Component, pageProps }) {
     </>
   );
 }
+
+MyApp.getInitialProps = wrapper.getInitialAppProps(
+  (store) =>
+    async ({ ctx, Component }) => {
+      try {
+        const userData = await Api(ctx).user.getMe();
+
+        store.dispatch(setUserData(userData));
+      } catch (e) {
+        if (ctx.asPath === "/write") {
+          ctx.res.writeHead(302, {
+            Location: "/403",
+          });
+          ctx.res.end();
+        }
+        console.log(e);
+      }
+
+      return {
+        pageProps: {
+          ...(Component.getInitialProps
+            ? await Component.getInitialProps({ ...ctx, store })
+            : {}),
+        },
+      };
+    }
+);
 
 export default wrapper.withRedux(MyApp);
