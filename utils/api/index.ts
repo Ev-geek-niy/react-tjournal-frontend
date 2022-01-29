@@ -3,10 +3,12 @@ import axios from "axios";
 import Cookies, { parseCookies } from "nookies";
 import { UserApi } from "./user";
 import { PostApi } from "./post";
+import { CommentApi } from "./comment";
 
 class ApiReturnType {
   user: ReturnType<typeof UserApi>;
   post: ReturnType<typeof PostApi>;
+  comment: ReturnType<typeof CommentApi>;
 }
 
 export const Api = (
@@ -22,8 +24,16 @@ export const Api = (
     },
   });
 
-  return {
-    user: UserApi(instance),
-    post: PostApi(instance),
+  const apis = {
+    user: UserApi,
+    post: PostApi,
+    comment: CommentApi,
   };
+
+  return Object.entries(apis).reduce((prev: any, [key, f]) => {
+    return {
+      ...prev,
+      [key]: f(instance),
+    };
+  }, {});
 };

@@ -1,19 +1,46 @@
 import React from "react";
 import { Button, Input } from "@material-ui/core";
 import styles from "./AddCommentForm.module.scss";
+import { Api } from "../../utils/api";
+import { CommentItem } from "../../utils/api/types";
+import { useAppSelector } from "../../redux/hooks";
+import { selectUserData } from "../../redux/slices/user";
 
-interface AddCommentFormProps {}
+interface AddCommentFormProps {
+  postId: number;
+  onSuccessAdd: (obj: CommentItem) => void;
+}
 
-export const AddCommentForm: React.FC<AddCommentFormProps> = () => {
+export const AddCommentForm: React.FC<AddCommentFormProps> = ({
+  postId,
+  onSuccessAdd,
+}) => {
+  const [isLoading, setIsLoading] = React.useState(false);
   const [clicked, setClicked] = React.useState(false);
   const [text, setText] = React.useState("");
-  const onAddComment = () => {
-    setText("");
-    setClicked(false);
+
+  const onAddComment = async () => {
+    try {
+      setIsLoading(true);
+      const comment = await Api().comment.create({
+        postId,
+        text,
+      });
+      onSuccessAdd(comment);
+      setClicked(false);
+      setText("");
+    } catch (e) {
+      console.warn("Add comment", e);
+      alert("Ошибка при отправке комментария");
+    } finally {
+      setIsLoading(false);
+    }
   };
+
   return (
     <div className={styles.form}>
       <Input
+        disabled={isLoading}
         onChange={(e) => setText(e.target.value)}
         value={text}
         onFocus={() => setClicked(true)}
@@ -25,6 +52,7 @@ export const AddCommentForm: React.FC<AddCommentFormProps> = () => {
       />
       {clicked && (
         <Button
+          disabled={isLoading}
           onClick={onAddComment}
           className={styles.addButton}
           variant="contained"

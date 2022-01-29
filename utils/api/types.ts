@@ -16,6 +16,7 @@ export type ResponseUser = {
   fullName: string;
   id: number;
   token: string;
+  commentsCount?: number;
 };
 
 export type CreatePostDto = {
@@ -33,4 +34,27 @@ export type PostItem = {
   user: ResponseUser;
   createdAt: string;
   updatedAt: string;
+};
+
+export type CreateCommentDto = {
+  postId: number;
+  text: string;
+};
+
+export type CommentItem = {
+  id: number;
+  text: string;
+  post: PostItem;
+  user: ResponseUser;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type SearchPostDto = {
+  title?: string;
+  body?: string;
+  views?: "DESC" | "ASC";
+  limit?: number;
+  take?: number;
+  tag?: string;
 };
